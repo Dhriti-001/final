@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Threat Vector | Cybersecurity Awareness & Training{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=6.0">
+{% if active_page == 'dashboard' %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}?v=6.0">
+{% endif %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="{% if active_page == 'dashboard' %}dashboard-page{% endif %}">
+
+    {% block navbar %}
+    {% if active_page == 'dashboard' %}
+    <!-- 1. TOP HEADER: Matching Dashboard Reference Design -->
+    <header class="top-header-bar-ref">
+        <div class="top-header-container-ref">
+            <!-- Left Branding: Shield with Lock + Brand Typography -->
+            <div class="top-header-brand-ref">
+                <a href="{{ url_for('index') }}" class="header-brand-link-ref">
+                    <div class="header-shield-wrap">
+                        <svg viewBox="0 0 28 32" class="header-shield-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Outer Blue Shield -->
+                            <path d="M14 2L3 6.8V15.5C3 22.2 7.8 28.3 14 30C20.2 28.3 25 22.2 25 15.5V6.8L14 2Z" 
+                                  stroke="#2563EB" stroke-width="2.2" fill="rgba(37, 99, 235, 0.12)" stroke-linejoin="round"/>
+                            <!-- Inner Padlock Icon -->
+                            <rect x="10" y="14" width="8" height="6.5" rx="1.5" stroke="#1D4ED8" stroke-width="1.8" fill="#FFFFFF"/>
+                            <path d="M11.5 14V11.5C11.5 10.1 12.6 9 14 9C15.4 9 16.5 10.1 16.5 11.5V14" stroke="#1D4ED8" stroke-width="1.8" stroke-linecap="round"/>
+                            <circle cx="14" cy="17" r="1" fill="#2563EB"/>
+                        </svg>
+                    </div>
+                    <div class="header-brand-info">
+                        <div class="header-title-row">
+                            <span class="brand-word-primary">THREAT</span>
+                            <span class="brand-word-blue">VECTOR</span>
+                        </div>
+                        <span class="header-subline">Cybersecurity Awareness &amp; Defensive Training Platform</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Right: Dynamic User Greeting + Logout -->
+            {% if session.get('username') or session.get('user_id') %}
+            <div class="top-header-actions-ref">
+                <div class="header-user-status-pill">
+                    <div class="user-avatar-icon-wrap">
+                        <svg viewBox="0 0 24 24" class="user-avatar-svg" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                    </div>
+                    <span class="welcome-text-muted">Welcome,</span>
+                    <strong class="user-display-name">{{ current_user.username if current_user else session.get('username', 'cadet') }}</strong>
+                    <span class="dropdown-chevron-symbol" aria-hidden="true">&#x2304;</span>
+                </div>
+                <a href="{{ url_for('logout') }}" class="btn-logout-pill">
+                    <svg viewBox="0 0 24 24" class="logout-icon-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16 17 21 12 16 7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+                    <span>Logout</span>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </header>
+    {% else %}
+    <!-- Unified Top Navigation Bar for Sub-Pages (High-Contrast Light Theme) -->
+    <nav class="soc-navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="brand-logo">
+                <div class="brand-icon-shield">
+                    <svg viewBox="0 0 28 32" class="nav-shield-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14 2L3 6.8V15.5C3 22.2 7.8 28.3 14 30C20.2 28.3 25 22.2 25 15.5V6.8L14 2Z" 
+                              stroke="#2563EB" stroke-width="2.2" fill="rgba(37, 99, 235, 0.12)" stroke-linejoin="round"/>
+                        <rect x="10" y="14" width="8" height="6.5" rx="1.5" stroke="#1D4ED8" stroke-width="1.8" fill="#FFFFFF"/>
+                        <path d="M11.5 14V11.5C11.5 10.1 12.6 9 14 9C15.4 9 16.5 10.1 16.5 11.5V14" stroke="#1D4ED8" stroke-width="1.8" stroke-linecap="round"/>
+                        <circle cx="14" cy="17" r="1" fill="#2563EB"/>
+                    </svg>
+                </div>
+                <div class="brand-title">
+                    <span class="brand-title-threat">THREAT</span> <span class="brand-title-vector">VECTOR</span>
+                    <span class="brand-badge-soc">SOC v2.0</span>
+                </div>
+            </a>
+
+            {% if session.get('user_id') %}
+            <ul class="nav-links">
+                <li><a href="{{ url_for('index') }}" class="nav-link"><span class="nav-icon">📊</span><span class="nav-label">Dashboard</span></a></li>
+                <li><a href="{{ url_for('drills') }}" class="nav-link {% if active_page == 'drills' %}active{% endif %}"><span class="nav-icon">🎯</span><span class="nav-label">Drills</span></a></li>
+                <li><a href="{{ url_for('inspector') }}" class="nav-link {% if active_page == 'inspector' %}active{% endif %}"><span class="nav-icon">🔍</span><span class="nav-label">AI Inspector</span></a></li>
+                <li><a href="{{ url_for('ctf') }}" class="nav-link {% if active_page == 'ctf' %}active{% endif %}"><span class="nav-icon">🚩</span><span class="nav-label">CTF Challenges</span></a></li>
+                <li><a href="{{ url_for('audit_lab_home') }}" class="nav-link {% if active_page == 'audit_lab' %}active{% endif %}"><span class="nav-icon">🛡️</span><span class="nav-label">Audit Lab</span></a></li>
+                <li><a href="{{ url_for('profile') }}" class="nav-link {% if active_page == 'profile' %}active{% endif %}"><span class="nav-icon">📈</span><span class="nav-label">Analytics</span></a></li>
+                <li><a href="{{ url_for('knowledge_modules') }}" class="nav-link {% if active_page == 'knowledge' %}active{% endif %}"><span class="nav-icon">📚</span><span class="nav-label">Knowledge Check</span></a></li>
+            </ul>
+
+            <div class="nav-user-panel">
+                <div class="user-badge">
+                    <span class="user-status-dot"></span>
+                    <span class="nav-username">{{ session.get('username') }}</span>
+                    <span class="user-score">{{ current_user.defense_score if current_user else 0 }} pts</span>
+                </div>
+                <a href="{{ url_for('logout') }}" class="btn-logout-pill">
+                    <svg viewBox="0 0 24 24" class="logout-icon-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16 17 21 12 16 7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+                    <span>Logout</span>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </nav>
+    {% endif %}
+    {% endblock %}
+
+    <!-- Main Content Area -->
+    <main class="{% if active_page == 'dashboard' %}dashboard-fullwidth-wrapper{% else %}main-wrapper{% endif %}">
+        <!-- Flash Alerts -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-container {% if active_page == 'dashboard' %}dashboard-flash-container{% endif %}">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category if category != 'error' else 'danger' }}">
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Light Theme SOC Footer -->
+    <footer class="soc-footer-ref">
+        <div class="footer-ref-container">
+            <div class="footer-ref-brand">
+                <div class="footer-shield-wrap">
+                    <svg viewBox="0 0 24 24" class="footer-shield-svg" fill="none" stroke="#2563EB" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L4 5.5V11.5C4 16.5 7.4 21 12 22C16.6 21 20 16.5 20 11.5V5.5L12 2Z" fill="rgba(37, 99, 235, 0.1)"/>
+                        <rect x="9.5" y="11" width="5" height="4" rx="1" stroke="#1D4ED8" stroke-width="1.4" fill="#FFFFFF"/>
+                        <path d="M10.5 11V9.5C10.5 8.7 11.2 8 12 8C12.8 8 13.5 8.7 13.5 9.5V11" stroke="#1D4ED8" stroke-width="1.4"/>
+                    </svg>
+                </div>
+                <strong class="footer-brand-title">THREAT VECTOR</strong>
+                <span class="footer-dot-separator">&bull;</span>
+                <span class="footer-tagline-text">Cybersecurity Awareness &amp; Training Platform</span>
+            </div>
+        </div>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

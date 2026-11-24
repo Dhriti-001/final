@@ -1,0 +1,806 @@
+{% extends "base.html" %}
+
+{% block title %}Security Audit Lab - {{ mission.title }} | Threat Vector{% endblock %}
+
+{% block content %}
+<div class="audit-container">
+
+    <!-- Top Navigation Breadcrumbs & Mission Header -->
+    <div class="audit-header-block">
+        <div class="audit-breadcrumb">
+            <a href="{{ url_for('index') }}" class="breadcrumb-link">&larr; Dashboard</a>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-current">Security Audit Lab</span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-mission">{{ mission.title }}</span>
+        </div>
+        
+        <div class="audit-mission-meta">
+            <div class="audit-title-row">
+                <div class="audit-badge-icon">🛡️</div>
+                <div>
+                    <h1 class="audit-page-title">{{ mission.title }}</h1>
+                    <p class="audit-page-subtitle">
+                        <strong>Target:</strong> {{ mission.company_name }} (40 Employees) &bull;
+                        <strong>Role:</strong> {{ mission.auditor_role }} &bull;
+                        <strong>Scope:</strong> 4 Investigation Stages (400 Total Points)
+                    </p>
+                </div>
+            </div>
+
+            <div class="audit-header-actions">
+                {% if view_mode == 'stage' %}
+                <a href="{{ url_for('audit_lab_report', mission_id=mission.id) }}" class="btn-audit-secondary">
+                    📊 View Final Report
+                </a>
+                {% else %}
+                <a href="{{ url_for('audit_lab_stage', mission_id=mission.id, stage_id=1) }}" class="btn-audit-secondary">
+                    &larr; Back to Investigation
+                </a>
+                {% endif %}
+                <a href="{{ url_for('reset_audit_mission_route', mission_id=mission.id) }}" 
+                   class="btn-audit-outline-danger"
+                   onclick="return confirm('Are you sure you want to reset your findings for this mission? This will clear all submitted answers.');">
+                    🔄 Reset Mission
+                </a>
+            </div>
+        </div>
+
+        <!-- 4-Stage Guided Stepper -->
+        <nav class="audit-stepper" aria-label="Investigation Stages">
+            {% for s_id in range(1, 5) %}
+            <a href="{{ url_for('audit_lab_stage', mission_id=mission.id, stage_id=s_id) }}" 
+               class="stepper-item {% if view_mode == 'stage' and stage_id == s_id %}stepper-current{% elif stages_status and stages_status.get(s_id) == 'completed' %}stepper-completed{% endif %}">
+                <div class="stepper-bubble">
+                    {% if stages_status and stages_status.get(s_id) == 'completed' %}
+                    ✓
+                    {% else %}
+                    {{ s_id }}
+                    {% endif %}
+                </div>
+                <div class="stepper-label-wrap">
+                    <span class="stepper-step-num">Stage {{ s_id }}</span>
+                    <span class="stepper-step-name">
+                        {% if s_id == 1 %}Access Register
+                        {% elif s_id == 2 %}Login Security
+                        {% elif s_id == 3 %}Data Backup
+                        {% elif s_id == 4 %}Software Updates
+                        {% endif %}
+                    </span>
+                </div>
+            </a>
+            {% endfor %}
+
+            <!-- Final Report Stepper Step -->
+            <a href="{{ url_for('audit_lab_report', mission_id=mission.id) }}" 
+               class="stepper-item {% if view_mode == 'report' %}stepper-current{% elif progress.is_completed %}stepper-completed{% endif %}">
+                <div class="stepper-bubble">
+                    {% if progress.is_completed %}✓{% else %}★{% endif %}
+                </div>
+                <div class="stepper-label-wrap">
+                    <span class="stepper-step-num">Report</span>
+                    <span class="stepper-step-name">Final Audit Report</span>
+                </div>
+            </a>
+        </nav>
+    </div>
+
+    {% if view_mode == 'stage' %}
+    <!-- =========================================================================
+         STAGE VIEW: Learning, Evidence, and Investigation Answer Submission
+         ========================================================================= -->
+
+    <!-- Evaluation Results Card (Displayed if student has submitted findings) -->
+    {% if submission %}
+    <section class="audit-results-card" id="evaluation-results">
+        <div class="results-header-row">
+            <div>
+                <span class="results-kicker">Audit Evaluation Results</span>
+                <h2 class="results-title">Stage {{ stage_id }} Assessment: {{ stage.title }}</h2>
+            </div>
+            <div class="results-score-badge">
+                <span class="score-number">{{ submission.total_score }}</span>
+                <span class="score-total">/ 100 PTS</span>
+            </div>
+        </div>
+
+        <!-- Evaluation Mode & Review Notice -->
+        <div class="results-eval-mode-bar">
+            <span class="eval-mode-indicator">
+                ℹ️ <strong>Evaluation Mode:</strong> {{ submission.feedback_data.get('evaluation_mode', 'Official Rubric Benchmark') }}
+            </span>
+            {% if submission.feedback_data.get('flagged_for_review') %}
+            <span class="eval-flagged-tag">
+                🚩 Flagged for Instructor Review
+            </span>
+            {% endif %}
+        </div>
+
+        {% if submission.feedback_data.get('flagged_for_review') and submission.feedback_data.get('review_reason') %}
+        <div class="audit-alert-box alert-warning-box">
+            <strong>Instructor Review Note:</strong> {{ submission.feedback_data.get('review_reason') }}
+        </div>
+        {% endif %}
+
+        <!-- Rubric Criteria Breakdown Grid -->
+        <div class="criteria-score-grid">
+            {% set crit = submission.feedback_data.get('criteria_scores', {}) %}
+            
+            <div class="crit-card">
+                <div class="crit-label">1. Identifying Weakness</div>
+                <div class="crit-score-val">{{ crit.get('weakness', {}).get('score', submission.weakness_score) }} / 30 pts</div>
+                <div class="crit-bar-track">
+                    <div class="crit-bar-fill" style="width: {{ ((crit.get('weakness', {}).get('score', submission.weakness_score) / 30) * 100)|round }}%;"></div>
+                </div>
+            </div>
+
+            <div class="crit-card">
+                <div class="crit-label">2. Supporting Evidence</div>
+                <div class="crit-score-val">{{ crit.get('evidence', {}).get('score', submission.evidence_score) }} / 20 pts</div>
+                <div class="crit-bar-track">
+                    <div class="crit-bar-fill" style="width: {{ ((crit.get('evidence', {}).get('score', submission.evidence_score) / 20) * 100)|round }}%;"></div>
+                </div>
+            </div>
+
+            <div class="crit-card">
+                <div class="crit-label">3. Risk Assessment</div>
+                <div class="crit-score-val">{{ crit.get('risk', {}).get('score', submission.risk_score) }} / 20 pts</div>
+                <div class="crit-bar-track">
+                    <div class="crit-bar-fill" style="width: {{ ((crit.get('risk', {}).get('score', submission.risk_score) / 20) * 100)|round }}%;"></div>
+                </div>
+            </div>
+
+            <div class="crit-card">
+                <div class="crit-label">4. Explaining Impact</div>
+                <div class="crit-score-val">{{ crit.get('impact', {}).get('score', submission.impact_score) }} / 15 pts</div>
+                <div class="crit-bar-track">
+                    <div class="crit-bar-fill" style="width: {{ ((crit.get('impact', {}).get('score', submission.impact_score) / 15) * 100)|round }}%;"></div>
+                </div>
+            </div>
+
+            <div class="crit-card">
+                <div class="crit-label">5. Recommendation</div>
+                <div class="crit-score-val">{{ crit.get('recommendation', {}).get('score', submission.recommendation_score) }} / 15 pts</div>
+                <div class="crit-bar-track">
+                    <div class="crit-bar-fill" style="width: {{ ((crit.get('recommendation', {}).get('score', submission.recommendation_score) / 15) * 100)|round }}%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feedback & Analysis Accordion / Panels -->
+        <div class="results-feedback-columns">
+            <div class="feedback-col feedback-good">
+                <h4 class="feedback-subtitle">
+                    <span class="icon-circle-ok">✓</span> What You Identified Correctly
+                </h4>
+                <ul class="feedback-list">
+                    {% for item in submission.feedback_data.get('identified_correctly', []) %}
+                    <li>{{ item }}</li>
+                    {% else %}
+                    <li>Baseline finding recorded.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="feedback-col feedback-missed">
+                <h4 class="feedback-subtitle">
+                    <span class="icon-circle-warn">!</span> Areas for Improvement / Missed Context
+                </h4>
+                <ul class="feedback-list">
+                    {% for item in submission.feedback_data.get('missed', []) %}
+                    <li>{{ item }}</li>
+                    {% else %}
+                    <li>No critical context missed.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Explanation of Every Deduction -->
+        {% if submission.feedback_data.get('deduction_explanations') %}
+        <div class="deductions-box">
+            <h4 class="deductions-heading">Detailed Rubric Deduction Explanations</h4>
+            <ul class="deductions-list">
+                {% for ded in submission.feedback_data.get('deduction_explanations') %}
+                <li>{{ ded }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- Recommended Professional Solution (Benchmark Solution) -->
+        <div class="benchmark-box">
+            <div class="benchmark-header">
+                <span class="benchmark-badge">Official Audit Benchmark</span>
+                <h3 class="benchmark-title">Recommended Professional Solution for Stage {{ stage_id }}</h3>
+            </div>
+            
+            <div class="benchmark-content-grid">
+                <div class="benchmark-item">
+                    <strong class="benchmark-key">Weakness Identified:</strong>
+                    <p class="benchmark-text">{{ stage.benchmark.weakness }}</p>
+                </div>
+                <div class="benchmark-item">
+                    <strong class="benchmark-key">Supporting Evidence:</strong>
+                    <p class="benchmark-text">{{ stage.benchmark.evidence }}</p>
+                </div>
+                <div class="benchmark-item">
+                    <strong class="benchmark-key">Risk Rating:</strong>
+                    <span class="risk-badge risk-high">{{ stage.benchmark.risk_level }} Risk</span>
+                </div>
+                <div class="benchmark-item">
+                    <strong class="benchmark-key">Potential Impact:</strong>
+                    <p class="benchmark-text">{{ stage.benchmark.impact }}</p>
+                </div>
+                <div class="benchmark-item">
+                    <strong class="benchmark-key">Professional Recommendation:</strong>
+                    <p class="benchmark-text">{{ stage.benchmark.recommendation }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Next Action Buttons -->
+        <div class="results-actions-bar">
+            {% if stage_id < 4 %}
+            <a href="{{ url_for('audit_lab_stage', mission_id=mission.id, stage_id=stage_id + 1) }}" class="btn-audit-primary">
+                Proceed to Stage {{ stage_id + 1 }} &rarr;
+            </a>
+            {% else %}
+            <a href="{{ url_for('audit_lab_report', mission_id=mission.id) }}" class="btn-audit-primary">
+                View Final Audit Report &rarr;
+            </a>
+            {% endif %}
+            <a href="#audit-findings-form" class="btn-audit-secondary" onclick="document.getElementById('weakness_field').focus();">
+                ✏️ Revise Findings
+            </a>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- =========================================================================
+         PART A: TEACHING BEFORE INVESTIGATION (Beginner-Friendly Learning)
+         ========================================================================= -->
+    <section class="audit-card audit-learning-card">
+        <div class="section-tag-line">
+            <span class="section-pill pill-learn">Step 1 &bull; Learn Concepts First</span>
+            <span class="section-time">⏱️ Estimated {{ stage.estimated_minutes }} mins</span>
+        </div>
+        <a href="{{ url_for('audit_lab_theory', mission_id=mission.id, stage_id=stage_id) }}" class="btn btn-primary">Read Theory</a>
+        <div class="auditor-tip-callout">
+            <span class="tip-icon">💡</span>
+            <div>
+                <strong>Junior Auditor Guidance:</strong>
+                <span>{{ stage.learning.auditor_tip }}</span>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =========================================================================
+         PART B: COMPANY EVIDENCE DOCUMENTS (Examine the Evidence)
+         ========================================================================= -->
+    <section class="audit-card audit-evidence-card">
+        <div class="section-tag-line">
+            <span class="section-pill pill-evidence">Step 2 &bull; Inspect Company Evidence</span>
+            <span class="section-source">Organization: {{ mission.company_name }}</span>
+        </div>
+        <h2 class="audit-section-heading">{{ stage.evidence.document_title }}</h2>
+        <div class="doc-meta-bar">
+            <span><strong>Date of Document:</strong> {{ stage.evidence.date_of_audit }}</span> &bull;
+            <span><strong>Custodian:</strong> {{ stage.evidence.prepared_by }}</span>
+        </div>
+
+        <!-- Dynamic Evidence Rendering by Stage -->
+        {% if stage_id == 1 %}
+        <!-- STAGE 1 EVIDENCE: Policy Extract + HR Notice + Access Register Table -->
+        <div class="evidence-block">
+            <h4 class="evidence-block-title">Extract: {{ stage.evidence.policy_extract.policy_id }}</h4>
+            <div class="policy-quote-box">
+                {% for sec in stage.evidence.policy_extract.sections %}
+                <p class="policy-rule-line">&bull; {{ sec }}</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="evidence-block">
+            <h4 class="evidence-block-title">HR Ticket Reference: {{ stage.evidence.hr_notice.ticket_id }}</h4>
+            <div class="hr-ticket-box">
+                <div class="hr-ticket-header">
+                    <strong>Notice Date:</strong> {{ stage.evidence.hr_notice.date }} | 
+                    <strong>Subject:</strong> {{ stage.evidence.hr_notice.subject }}
+                </div>
+                <p class="hr-ticket-body">{{ stage.evidence.hr_notice.note }}</p>
+            </div>
+        </div>
+
+        <div class="evidence-block">
+            <h4 class="evidence-block-title">Active Directory &amp; Cloud Console User Register</h4>
+            <div class="table-responsive">
+                <table class="audit-data-table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Employee Name</th>
+                            <th>Department</th>
+                            <th>Role Description</th>
+                            <th>Status</th>
+                            <th>Assigned Privileges</th>
+                            <th>Last Login Record</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in stage.evidence.user_register %}
+                        <tr {% if u.username == 'david.chen' %}class="row-flagged"{% endif %}>
+                            <td><code>{{ u.username }}</code></td>
+                            <td><strong>{{ u.employee_name }}</strong></td>
+                            <td>{{ u.department }}</td>
+                            <td>{{ u.role }}</td>
+                            <td>
+                                {% if u.account_status == 'ACTIVE' %}
+                                <span class="badge-status status-danger">ACTIVE</span>
+                                {% else %}
+                                <span class="badge-status status-normal">{{ u.account_status }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if 'Admin' in u.privilege_level %}
+                                <span class="badge-privilege-high">{{ u.privilege_level }}</span>
+                                {% else %}
+                                <span class="badge-privilege-standard">{{ u.privilege_level }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="cell-mono">{{ u.last_login }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {% elif stage_id == 2 %}
+        <!-- STAGE 2 EVIDENCE: Login Authentication Settings + WAF Log Excerpt -->
+        <div class="evidence-block">
+            <h4 class="evidence-block-title">System Authentication Configuration Parameters</h4>
+            <div class="table-responsive">
+                <table class="audit-data-table">
+                    <thead>
+                        <tr>
+                            <th>Configuration Key</th>
+                            <th>Configured Value</th>
+                            <th>Description</th>
+                            <th>Security Health</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for setting in stage.evidence.system_settings %}
+                        <tr {% if setting.status == 'FAIL' %}class="row-flagged"{% endif %}>
+                            <td><code>{{ setting.parameter }}</code></td>
+                            <td><strong>{{ setting.setting_value }}</strong></td>
+                            <td>{{ setting.description }}</td>
+                            <td>
+                                {% if setting.status == 'FAIL' %}
+                                <span class="badge-status status-danger">FAIL / INSECURE</span>
+                                {% else %}
+                                <span class="badge-status status-warning">WARNING</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="evidence-block">
+            <h4 class="evidence-block-title">Authentication Gateway &amp; Firewall Log Excerpt</h4>
+            <div class="terminal-log-box">
+                <pre class="terminal-log-text">{{ stage.evidence.gateway_log_extract }}</pre>
+            </div>
+        </div>
+
+        {% elif stage_id == 3 %}
+        <!-- STAGE 3 EVIDENCE: Backup Architecture Specification + Incident INC-2025-11-28 -->
+        <div class="evidence-block">
+            <h4 class="evidence-block-title">Production Database Backup Architecture Specification</h4>
+            <div class="table-responsive">
+                <table class="audit-data-table">
+                    <tbody>
+                        <tr>
+                            <td class="tbl-key">Primary Database</td>
+                            <td><strong>{{ stage.evidence.backup_specification.database_system }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="tbl-key">Database Size</td>
+                            <td>{{ stage.evidence.backup_specification.database_size }}</td>
+                        </tr>
+                        <tr>
+                            <td class="tbl-key">Backup Method</td>
+                            <td>{{ stage.evidence.backup_specification.backup_method }}</td>
+                        </tr>
+                        <tr class="row-flagged">
+                            <td class="tbl-key">Frequency</td>
+                            <td><strong class="text-danger">{{ stage.evidence.backup_specification.backup_frequency }}</strong> (Last backup: {{ stage.evidence.backup_specification.last_backup_date }})</td>
+                        </tr>
+                        <tr class="row-flagged">
+                            <td class="tbl-key">Storage Location</td>
+                            <td><code>{{ stage.evidence.backup_specification.storage_location }}</code> ({{ stage.evidence.backup_specification.network_segment }})</td>
+                        </tr>
+                        <tr class="row-flagged">
+                            <td class="tbl-key">Offsite Cloud Copy</td>
+                            <td><strong class="text-danger">{{ stage.evidence.backup_specification.offsite_cloud_copy }}</strong></td>
+                        </tr>
+                        <tr class="row-flagged">
+                            <td class="tbl-key">Restoration Testing</td>
+                            <td><strong class="text-danger">{{ stage.evidence.backup_specification.restoration_testing_history }}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="evidence-block">
+            <h4 class="evidence-block-title">Past Incident Report: {{ stage.evidence.incident_report.report_id }}</h4>
+            <div class="incident-alert-box">
+                <div class="incident-alert-header">
+                    <strong>Incident:</strong> {{ stage.evidence.incident_report.incident_title }} &bull; 
+                    <strong>Date:</strong> {{ stage.evidence.incident_report.incident_date }}
+                </div>
+                <p class="incident-alert-summary">{{ stage.evidence.incident_report.summary }}</p>
+            </div>
+        </div>
+
+        {% elif stage_id == 4 %}
+        <!-- STAGE 4 EVIDENCE: Policy Extract + Vulnerability Scanner Asset Report -->
+        <div class="evidence-block">
+            <h4 class="evidence-block-title">Extract: {{ stage.evidence.policy_extract.policy_id }}</h4>
+            <div class="policy-quote-box">
+                {% for sec in stage.evidence.policy_extract.sections %}
+                <p class="policy-rule-line">&bull; {{ sec }}</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="evidence-block">
+            <h4 class="evidence-block-title">Vulnerability Scanner Asset Report</h4>
+            <div class="table-responsive">
+                <table class="audit-data-table">
+                    <thead>
+                        <tr>
+                            <th>Host / Asset</th>
+                            <th>IP Address</th>
+                            <th>Role</th>
+                            <th>Operating System</th>
+                            <th>Vulnerability / Status</th>
+                            <th>Severity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for asset in stage.evidence.vulnerability_scan %}
+                        <tr class="row-flagged">
+                            <td><strong>{{ asset.hostname }}</strong></td>
+                            <td><code>{{ asset.ip_address }}</code></td>
+                            <td>{{ asset.role }}</td>
+                            <td>{{ asset.os }}</td>
+                            <td>
+                                <div><strong>{{ asset.critical_cve }}</strong></div>
+                                <div class="text-muted" style="font-size: 0.8rem;">Status: {{ asset.patch_status }}</div>
+                            </td>
+                            <td>
+                                {% if asset.risk_indicator == 'CRITICAL' %}
+                                <span class="badge-status status-danger">CRITICAL</span>
+                                {% else %}
+                                <span class="badge-status status-warning">HIGH</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Document Notes Callout -->
+        <div class="evidence-notes-callout">
+            <strong>Auditor File Summary:</strong> {{ stage.evidence.auditor_notes }}
+        </div>
+    </section>
+
+
+    <!-- =========================================================================
+         PART C: STUDENT AUDIT FINDINGS (Submit Investigation Answers)
+         ========================================================================= -->
+    <section class="audit-card audit-form-card" id="audit-findings-form">
+        <div class="section-tag-line">
+            <span class="section-pill pill-form">Step 3 &bull; Submit Your Audit Finding</span>
+            <span class="section-rubric">Rubric: 100 Points Total</span>
+        </div>
+        <h2 class="audit-section-heading">Record Your Audit Findings for Stage {{ stage_id }}</h2>
+        <p class="audit-section-intro">
+            Analyze the evidence above and submit your official audit conclusions. 
+            Your response will be evaluated against the five standard professional rubric criteria.
+        </p>
+
+        <form action="{{ url_for('submit_audit_stage', mission_id=mission.id, stage_id=stage_id) }}" method="POST" class="audit-form">
+            
+            <!-- Criterion 1: Weakness Identification (30 pts) -->
+            <div class="form-group-rubric">
+                <div class="rubric-field-header">
+                    <label for="weakness_field" class="rubric-label">
+                        1. What security weakness did you identify?
+                    </label>
+                    <span class="rubric-points-tag">30 Points</span>
+                </div>
+                <p class="rubric-help-text">
+                    Clearly explain the core flaw, bad practice, or missing security control you uncovered in the evidence.
+                </p>
+                <textarea id="weakness_field" name="weakness" rows="3" class="audit-textarea" 
+                          placeholder="e.g. In the employee access register, I identified that an administrator account belonging to a departed employee..." required>{{ submission.weakness_answer if submission else '' }}</textarea>
+            </div>
+
+            <!-- Criterion 2: Supporting Evidence (20 pts) -->
+            <div class="form-group-rubric">
+                <div class="rubric-field-header">
+                    <label for="evidence_field" class="rubric-label">
+                        2. What evidence supports your finding?
+                    </label>
+                    <span class="rubric-points-tag">20 Points</span>
+                </div>
+                <p class="rubric-help-text">
+                    Cite specific details from the documents above (such as names, dates, policy rule numbers, server logs, or error codes).
+                </p>
+                <textarea id="evidence_field" name="evidence" rows="3" class="audit-textarea" 
+                          placeholder="e.g. According to HR Ticket #8821, David Chen resigned on Oct 14, 2025, but the register shows his account is still ACTIVE with Domain Admin..." required>{{ submission.evidence_answer if submission else '' }}</textarea>
+            </div>
+
+            <!-- Criterion 3: Risk Assessment (20 pts) -->
+            <div class="form-group-rubric">
+                <div class="rubric-field-header">
+                    <label class="rubric-label">
+                        3. How serious is the risk?
+                    </label>
+                    <span class="rubric-points-tag">20 Points</span>
+                </div>
+                <p class="rubric-help-text">
+                    Assess the level of danger this vulnerability poses to ShopEase, its 40 employees, and customer records.
+                </p>
+                <div class="risk-radio-row">
+                    <label class="risk-radio-card risk-low-card">
+                        <input type="radio" name="risk" value="Low" {% if submission and submission.risk_level == 'Low' %}checked{% endif %}>
+                        <div class="risk-card-content">
+                            <span class="risk-card-title">Low Risk</span>
+                            <span class="risk-card-desc">Minimal harm; minor non-compliance.</span>
+                        </div>
+                    </label>
+
+                    <label class="risk-radio-card risk-medium-card">
+                        <input type="radio" name="risk" value="Medium" {% if submission and submission.risk_level == 'Medium' %}checked{% endif %}>
+                        <div class="risk-card-content">
+                            <span class="risk-card-title">Medium Risk</span>
+                            <span class="risk-card-desc">Moderate disruption; requires specific conditions to exploit.</span>
+                        </div>
+                    </label>
+
+                    <label class="risk-radio-card risk-high-card">
+                        <input type="radio" name="risk" value="High" {% if not submission or submission.risk_level == 'High' %}checked{% endif %}>
+                        <div class="risk-card-content">
+                            <span class="risk-card-title">High Risk</span>
+                            <span class="risk-card-desc">Severe immediate danger; direct threat of data breach or takeover.</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Criterion 4: Potential Impact (15 pts) -->
+            <div class="form-group-rubric">
+                <div class="rubric-field-header">
+                    <label for="impact_field" class="rubric-label">
+                        4. What could happen because of this weakness?
+                    </label>
+                    <span class="rubric-points-tag">15 Points</span>
+                </div>
+                <p class="rubric-help-text">
+                    Explain what an attacker could do, or what damage ShopEase could suffer (e.g. data theft, ransomware, financial penalties).
+                </p>
+                <textarea id="impact_field" name="impact" rows="3" class="audit-textarea" 
+                          placeholder="e.g. If an attacker gains access to this account, they would have total administrative control over the entire cloud infrastructure..." required>{{ submission.impact_answer if submission else '' }}</textarea>
+            </div>
+
+            <!-- Criterion 5: Recommended Fix (15 pts) -->
+            <div class="form-group-rubric">
+                <div class="rubric-field-header">
+                    <label for="recommendation_field" class="rubric-label">
+                        5. What would you recommend to fix it?
+                    </label>
+                    <span class="rubric-points-tag">15 Points</span>
+                </div>
+                <p class="rubric-help-text">
+                    Propose actionable, realistic security steps the company should implement to resolve this flaw and prevent recurrence.
+                </p>
+                <textarea id="recommendation_field" name="recommendation" rows="3" class="audit-textarea" 
+                          placeholder="e.g. Immediately revoke and disable David Chen's account. Conduct a security audit of all recent logins, and implement an automated..." required>{{ submission.recommendation_answer if submission else '' }}</textarea>
+            </div>
+
+            <!-- Submit Button & Evaluation Notice -->
+            <div class="form-footer-bar">
+                <button type="submit" class="btn-audit-primary btn-submit-findings">
+                    {% if submission %}🔄 Update &amp; Re-Evaluate Finding{% else %}🚀 Submit Finding for Evaluation (100 Pts){% endif %}
+                </button>
+                <span class="form-footer-hint">
+                    Submissions are evaluated against the official 100-point rubric. Credit is awarded for technical meaning across varied phrasing.
+                </span>
+            </div>
+        </form>
+    </section>
+
+    {% elif view_mode == 'report' %}
+    <!-- =========================================================================
+         REPORT VIEW: Comprehensive Final Security Audit Report
+         ========================================================================= -->
+    <section class="audit-report-container">
+        <!-- Executive Report Header -->
+        <div class="audit-report-card report-header-card">
+            <div class="report-header-flex">
+                <div>
+                    <span class="report-badge">Executive Security Audit Report</span>
+                    <h1 class="report-main-title">ShopEase Inc. - Cybersecurity Posture Assessment</h1>
+                    <div class="report-meta-grid">
+                        <div><strong>Target Company:</strong> ShopEase Inc. (40 Employees)</div>
+                        <div><strong>Lead Auditor:</strong> {{ current_user.username }} (Junior Security Auditor)</div>
+                        <div><strong>Completed Stages:</strong> {{ all_submissions|length }} / 4 Stages</div>
+                        <div><strong>Report Generated:</strong> Current Session</div>
+                    </div>
+                </div>
+
+                <div class="report-score-showcase">
+                    <div class="report-circle-gauge">
+                        <span class="gauge-score">{{ report.average_score }}</span>
+                        <span class="gauge-total">/ 100</span>
+                    </div>
+                    <div class="gauge-caption">Average Audit Score</div>
+                    <div class="gauge-points-sub">{{ report.total_earned }} / {{ report.total_possible }} Total Points</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stage Performance Scorecard Table -->
+        <div class="audit-report-card">
+            <h2 class="report-card-heading">1. Stage-by-Stage Performance Scorecard</h2>
+            <div class="table-responsive">
+                <table class="audit-data-table report-score-table">
+                    <thead>
+                        <tr>
+                            <th>Investigation Stage</th>
+                            <th>Status</th>
+                            <th>Score Earned</th>
+                            <th>Percentage</th>
+                            <th>Performance Level</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for st in report.stage_scores %}
+                        <tr>
+                            <td><strong>Stage {{ st.stage_id }}: {{ st.title }}</strong></td>
+                            <td><span class="badge-status status-normal">Completed</span></td>
+                            <td class="cell-score"><strong>{{ st.score }}</strong> / {{ st.max }}</td>
+                            <td>{{ ((st.score / st.max) * 100)|round(1) }}%</td>
+                            <td>
+                                {% if st.score >= 85 %}
+                                <span class="badge-perf-high">Distinction</span>
+                                {% elif st.score >= 70 %}
+                                <span class="badge-perf-med">Proficient</span>
+                                {% else %}
+                                <span class="badge-perf-low">Needs Revision</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('audit_lab_stage', mission_id=mission.id, stage_id=st.stage_id) }}" class="btn-table-action">
+                                    Review Stage &rarr;
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                        {% if all_submissions|length < 4 %}
+                        {% for uncompleted_id in range((all_submissions|length) + 1, 5) %}
+                        <tr class="row-uncompleted">
+                            <td><em>Stage {{ uncompleted_id }}: (Pending Investigation)</em></td>
+                            <td><span class="badge-status status-warning">Not Submitted</span></td>
+                            <td>-- / 100</td>
+                            <td>--</td>
+                            <td><em>Pending</em></td>
+                            <td>
+                                <a href="{{ url_for('audit_lab_stage', mission_id=mission.id, stage_id=uncompleted_id) }}" class="btn-table-action btn-table-cta">
+                                    Start Stage {{ uncompleted_id }} &rarr;
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Performance Diagnostic: Strengths vs Growth Areas -->
+        <div class="report-grid-two-col">
+            <div class="audit-report-card">
+                <h3 class="diagnostic-heading heading-well">
+                    <span>🌟</span> Areas Where You Performed Well
+                </h3>
+                <div class="diagnostic-list">
+                    {% for item in report.areas_performed_well %}
+                    <div class="diagnostic-item item-well">
+                        <div class="diagnostic-title">{{ item.label }} ({{ item.percentage }}%)</div>
+                        <p class="diagnostic-detail">{{ item.detail }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="audit-report-card">
+                <h3 class="diagnostic-heading heading-improve">
+                    <span>🎯</span> Areas That Need Improvement
+                </h3>
+                <div class="diagnostic-list">
+                    {% for item in report.areas_needing_improvement %}
+                    <div class="diagnostic-item item-improve">
+                        <div class="diagnostic-title">{{ item.label }} ({{ item.percentage }}%)</div>
+                        <p class="diagnostic-detail">{{ item.detail }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Consolidated Major Security Findings -->
+        <div class="audit-report-card">
+            <h2 class="report-card-heading">2. Consolidated Major Security Findings</h2>
+            <div class="findings-timeline">
+                {% for finding in report.major_findings %}
+                <div class="finding-timeline-card">
+                    <div class="finding-header-row">
+                        <span class="finding-stage-badge">Stage {{ finding.stage_id }}</span>
+                        <h4 class="finding-title">{{ finding.stage_title }}</h4>
+                        <span class="risk-badge risk-high">{{ finding.risk_level }} Risk</span>
+                    </div>
+                    <p class="finding-description-text">{{ finding.finding }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Prioritized Recommended Action Plan -->
+        <div class="audit-report-card">
+            <h2 class="report-card-heading">3. Recommended Corrective Action Plan (Prioritized)</h2>
+            <div class="action-plan-grid">
+                {% for action in report.recommended_actions %}
+                <div class="action-plan-item">
+                    <div class="action-plan-num">0{{ action.stage_id }}</div>
+                    <div>
+                        <strong class="action-plan-stage">{{ action.stage_title }}</strong>
+                        <p class="action-plan-text">{{ action.action }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Report Footer Actions -->
+        <div class="report-footer-actions">
+            <button onclick="window.print()" class="btn-audit-primary">
+                🖨️ Print / Save Audit Report
+            </button>
+            <a href="{{ url_for('audit_lab_stage', mission_id=mission.id, stage_id=1) }}" class="btn-audit-secondary">
+                Review Investigation Findings
+            </a>
+            <a href="{{ url_for('index') }}" class="btn-audit-secondary">
+                Return to SOC Dashboard
+            </a>
+        </div>
+    </section>
+    {% endif %}
+
+</div>
+{% endblock %}

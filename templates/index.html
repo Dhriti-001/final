@@ -1,0 +1,353 @@
+{% extends "base.html" %}
+
+{% block title %}Threat Vector | Cybersecurity Awareness & Defensive Training Platform{% endblock %}
+
+{% block content %}
+
+<!-- =========================================================================
+     1. HERO WELCOME BANNER (Matching Reference Image)
+     ========================================================================= -->
+<section class="dashboard-hero-banner">
+    <div class="hero-content-flex">
+        <!-- Left: Greetings & Mission Capsule -->
+        <div class="hero-left-col">
+            <div class="hero-greeting-row">
+                <span class="hero-wave-hand" role="img" aria-label="Waving hand">👋</span>
+                <h1 class="hero-heading">Welcome back, <span class="hero-user-name">{{ current_user.username if current_user else session.get('username', 'cadet') }}</span>!</h1>
+            </div>
+
+            <p class="hero-subtext">
+                Learn cybersecurity through interactive simulations, practical challenges and AI-powered insights.
+            </p>
+
+            <!-- Capsule Pill Badge (Matching Reference Image) -->
+            <div class="hero-badge-pill">
+                <span class="badge-check-circle">✓</span>
+                <strong class="badge-highlight">Learn. Practice. Grow.</strong>
+                <span class="badge-separator">|</span>
+                <span class="badge-tagline">Your journey towards a safer digital world starts here.</span>
+            </div>
+        </div>
+
+        <!-- Right: 3D Shield Illustration with Orbital Ring -->
+        <div class="hero-right-col" aria-hidden="true">
+            <div class="hero-shield-illustration">
+                <svg viewBox="0 0 240 200" class="hero-shield-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="shieldGradLight" x1="60" y1="20" x2="180" y2="180" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#38BDF8"/>
+                            <stop offset="50%" stop-color="#2563EB"/>
+                            <stop offset="100%" stop-color="#1D4ED8"/>
+                        </linearGradient>
+                        <linearGradient id="ringGradLight" x1="30" y1="100" x2="210" y2="100" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.8"/>
+                            <stop offset="50%" stop-color="#60A5FA" stop-opacity="1"/>
+                            <stop offset="100%" stop-color="#93C5FD" stop-opacity="0.4"/>
+                        </linearGradient>
+                        <filter id="shieldShadow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#2563EB" flood-opacity="0.22"/>
+                        </filter>
+                    </defs>
+                    <!-- Orbital Ring Back -->
+                    <ellipse cx="120" cy="100" rx="90" ry="32" stroke="#93C5FD" stroke-width="2" stroke-dasharray="6 6" fill="none" transform="rotate(-15 120 100)"/>
+                    
+                    <!-- Sparkling Stars Accents -->
+                    <path d="M45 60 L48 68 L56 71 L48 74 L45 82 L42 74 L34 71 L42 68 Z" fill="#FBBF24" opacity="0.9"/>
+                    <circle cx="205" cy="75" r="4" fill="#38BDF8" opacity="0.8"/>
+                    <circle cx="218" cy="115" r="2.5" fill="#60A5FA" opacity="0.7"/>
+
+                    <!-- Main Shield Body -->
+                    <path d="M120 25 L175 48 V105 C175 142 152 170 120 182 C88 170 65 142 65 105 V48 L120 25 Z" 
+                          fill="url(#shieldGradLight)" stroke="#FFFFFF" stroke-width="3" filter="url(#shieldShadow)"/>
+                    
+                    <!-- Inner Bevel Accent -->
+                    <path d="M120 35 L165 54 V102 C165 133 146 156 120 168 C94 156 75 133 75 102 V54 L120 35 Z" 
+                          fill="#1D4ED8" fill-opacity="0.25" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+
+                    <!-- Center White Padlock -->
+                    <path d="M106 82 V72 C106 64.3 112.3 58 120 58 C127.7 58 134 64.3 134 72 V82" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" fill="none"/>
+                    <rect x="98" y="80" width="44" height="38" rx="8" fill="#FFFFFF"/>
+                    <circle cx="120" cy="95" r="4" fill="#1D4ED8"/>
+                    <path d="M118 97 L116 107 H124 L122 97 Z" fill="#1D4ED8"/>
+
+                    <!-- Orbital Ring Front -->
+                    <path d="M 32 110 A 90 32 0 0 0 208 90" stroke="url(#ringGradLight)" stroke-width="3" fill="none" transform="rotate(-15 120 100)"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- =========================================================================
+     2. SIX FEATURE MODULES (3 Columns x 2 Rows, Exact Order)
+     ========================================================================= -->
+<div class="feature-modules-grid">
+
+    <!-- 1. Simulation Drills (Blue Theme) -->
+    <a href="{{ url_for('drills') }}" class="module-card module-theme-blue">
+        <!-- Abstract Pastel Blob -->
+        <svg class="module-corner-blob" viewBox="0 0 100 80" fill="none">
+            <path d="M100 0 C70 10 40 45 40 80 H100 Z" fill="#BFDBFE"/>
+        </svg>
+        <div class="card-top-row">
+            <div class="card-icon-title-wrap">
+                <div class="card-circle-icon">
+                    <!-- Gamepad Icon -->
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm3-3c-.83 0-1.5-.67-1.5-1.5S17.67 9 18.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+                    </svg>
+                </div>
+                <div class="card-text-block">
+                    <h3 class="module-title">Simulation Drills</h3>
+                    <p class="module-description">Test your skills with realistic cybersecurity scenarios.</p>
+                </div>
+            </div>
+            <div class="card-arrow-btn">&rarr;</div>
+        </div>
+        <div class="card-bottom-cta">
+            <span class="cta-bar">|</span>
+            <span class="cta-text">Start Drills</span>
+            <span class="cta-arrow">&rarr;</span>
+        </div>
+    </a>
+
+    <!-- 2. AI Threat Inspector (Purple Theme) -->
+    <a href="{{ url_for('inspector') }}" class="module-card module-theme-purple">
+        <!-- Abstract Pastel Blob -->
+        <svg class="module-corner-blob" viewBox="0 0 100 80" fill="none">
+            <path d="M100 0 C70 10 40 45 40 80 H100 Z" fill="#E9D5FF"/>
+        </svg>
+        <div class="card-top-row">
+            <div class="card-icon-title-wrap">
+                <div class="card-circle-icon">
+                    <!-- Magnifying Glass Icon -->
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                </div>
+                <div class="card-text-block">
+                    <h3 class="module-title">AI Threat Inspector</h3>
+                    <p class="module-description">Analyze suspicious files, links and documents.</p>
+                </div>
+            </div>
+            <div class="card-arrow-btn">&rarr;</div>
+        </div>
+        <div class="card-bottom-cta">
+            <span class="cta-bar">|</span>
+            <span class="cta-text">Inspect Now</span>
+            <span class="cta-arrow">&rarr;</span>
+        </div>
+    </a>
+
+    <!-- 3. CTF Tactical Range (Amber Theme) -->
+    <a href="{{ url_for('ctf') }}" class="module-card module-theme-amber">
+        <!-- Abstract Pastel Blob -->
+        <svg class="module-corner-blob" viewBox="0 0 100 80" fill="none">
+            <path d="M100 0 C70 10 40 45 40 80 H100 Z" fill="#FDE68A"/>
+        </svg>
+        <div class="card-top-row">
+            <div class="card-icon-title-wrap">
+                <div class="card-circle-icon">
+                    <!-- Flag Icon -->
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"/>
+                    </svg>
+                </div>
+                <div class="card-text-block">
+                    <h3 class="module-title">CTF Tactical Range</h3>
+                    <p class="module-description">Solve beginner-friendly security challenges.</p>
+                </div>
+            </div>
+            <div class="card-arrow-btn">&rarr;</div>
+        </div>
+        <div class="card-bottom-cta">
+            <span class="cta-bar">|</span>
+            <span class="cta-text">Play Challenge</span>
+            <span class="cta-arrow">&rarr;</span>
+        </div>
+    </a>
+
+    <!-- 4. Security Audit Lab (Coral/Red Theme) -->
+    <a href="{{ url_for('audit_lab_home') }}" class="module-card module-theme-red">
+        <!-- Abstract Pastel Blob -->
+        <svg class="module-corner-blob" viewBox="0 0 100 80" fill="none">
+            <path d="M100 0 C70 10 40 45 40 80 H100 Z" fill="#FECDD3"/>
+        </svg>
+        <div class="card-top-row">
+            <div class="card-icon-title-wrap">
+                <div class="card-circle-icon">
+                    <!-- Shield with Exclamation Icon -->
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 6h2v6h-2V7zm0 8h2v2h-2v-2z"/>
+                    </svg>
+                </div>
+                <div class="card-text-block">
+                    <h3 class="module-title">Security Audit Lab</h3>
+                    <p class="module-description">Identify and fix security vulnerabilities.</p>
+                </div>
+            </div>
+            <div class="card-arrow-btn">&rarr;</div>
+        </div>
+        <div class="card-bottom-cta">
+            <span class="cta-bar">|</span>
+            <span class="cta-text">Start Audit</span>
+            <span class="cta-arrow">&rarr;</span>
+        </div>
+    </a>
+
+    <!-- 5. Knowledge Check (Green/Mint Theme) -->
+    <a href="{{ url_for('knowledge_modules') }}" class="module-card module-theme-green">
+        <!-- Abstract Pastel Blob -->
+        <svg class="module-corner-blob" viewBox="0 0 100 80" fill="none">
+            <path d="M100 0 C70 10 40 45 40 80 H100 Z" fill="#BBF7D0"/>
+        </svg>
+        <div class="card-top-row">
+            <div class="card-icon-title-wrap">
+                <div class="card-circle-icon">
+                    <!-- Checkmark Circle Icon -->
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                </div>
+                <div class="card-text-block">
+                    <h3 class="module-title">Knowledge Check</h3>
+                    <p class="module-description">8 structured modules with 480 questions and explanations.</p>
+                </div>
+            </div>
+            <div class="card-arrow-btn">&rarr;</div>
+        </div>
+        <div class="card-bottom-cta">
+            <span class="cta-bar">|</span>
+            <span class="cta-text">Start Learning</span>
+            <span class="cta-arrow">&rarr;</span>
+        </div>
+    </a>
+
+    <!-- 6. Analytics & Risk Profile (Violet/Indigo Theme) -->
+    <a href="{{ url_for('profile') }}" class="module-card module-theme-indigo">
+        <!-- Abstract Pastel Blob -->
+        <svg class="module-corner-blob" viewBox="0 0 100 80" fill="none">
+            <path d="M100 0 C70 10 40 45 40 80 H100 Z" fill="#DDD6FE"/>
+        </svg>
+        <div class="card-top-row">
+            <div class="card-icon-title-wrap">
+                <div class="card-circle-icon">
+                    <!-- Bar Chart Icon -->
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/>
+                    </svg>
+                </div>
+                <div class="card-text-block">
+                    <h3 class="module-title">Analytics &amp; Risk Profile</h3>
+                    <p class="module-description">Track your learning progress, weakness diagnostics, and defense certificates.</p>
+                </div>
+            </div>
+            <div class="card-arrow-btn">&rarr;</div>
+        </div>
+        <div class="card-bottom-cta">
+            <span class="cta-bar">|</span>
+            <span class="cta-text">View Analytics</span>
+            <span class="cta-arrow">&rarr;</span>
+        </div>
+    </a>
+
+</div>
+
+<!-- =========================================================================
+     3. EXPLORE YOUR MODULES: LEARNED & PRACTICED (Matching Reference Image)
+     ========================================================================= -->
+<section class="modules-overview-section">
+    <div class="overview-header-row">
+        <div class="overview-title-group">
+            <div class="overview-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/>
+                </svg>
+            </div>
+            <div>
+                <h2 class="overview-heading">Explore Your Modules</h2>
+                <p class="overview-subheading">Choose from our six beginner-friendly modules to enhance your cybersecurity skills.</p>
+            </div>
+        </div>
+        <div class="overview-sparkles" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="#38BDF8"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Dual Summary Cards -->
+    <div class="dual-cards-row">
+        <!-- Learned Card -->
+        <div class="summary-card learned-card">
+            <div class="summary-card-inner">
+                <div class="summary-left-info">
+                    <div class="summary-card-icon blue-bubble">
+                        <!-- Graduation Cap Icon -->
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="summary-title">Learned</h3>
+                        <p class="summary-desc">Understand the theory behind cybersecurity.</p>
+                    </div>
+                </div>
+                <div class="summary-badge-pill">
+                    <span>—</span>
+                </div>
+            </div>
+            <div class="summary-card-details">
+                <div class="meta-item">
+                    <span class="meta-dot blue"></span>
+                    <span>8 Structured Cybersecurity Modules</span>
+                </div>
+                <a href="{{ url_for('knowledge_modules') }}" class="meta-link blue">Explore Modules &rarr;</a>
+            </div>
+        </div>
+
+        <!-- Practiced Card -->
+        <div class="summary-card practiced-card">
+            <div class="summary-card-inner">
+                <div class="summary-left-info">
+                    <div class="summary-card-icon green-bubble">
+                        <!-- Trophy Icon -->
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0011 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 003.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="summary-title">Practiced</h3>
+                        <p class="summary-desc">Apply your knowledge through practical activities.</p>
+                    </div>
+                </div>
+                <div class="summary-badge-pill">
+                    <span>—</span>
+                </div>
+            </div>
+            <div class="summary-card-details">
+                <div class="practiced-metrics">
+                    <div class="metric-chip">
+                        <span class="chip-label">Defense Score:</span>
+                        <strong class="chip-val">{{ current_user.defense_score if current_user else 0 }} pts</strong>
+                    </div>
+                    <div class="metric-chip">
+                        <span class="chip-label">Drills:</span>
+                        <strong class="chip-val">{{ current_user.drills_completed if current_user else 0 }}</strong>
+                    </div>
+                    <div class="metric-chip">
+                        <span class="chip-label">CTF:</span>
+                        <strong class="chip-val">{{ current_user.ctf_completed if current_user else 0 }}</strong>
+                    </div>
+                    <div class="metric-chip">
+                        <span class="chip-label">Audit Stages:</span>
+                        <strong class="chip-val">{{ audit_progress.completed_stages if audit_progress else 0 }} / 4</strong>
+                    </div>
+                </div>
+                <a href="{{ url_for('drills') }}" class="meta-link green">Continue Practicing &rarr;</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

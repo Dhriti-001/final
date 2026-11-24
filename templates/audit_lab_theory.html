@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Audit Lab Theory - Stage {{ stage_id }}{% endblock %}
+{% block content %}
+<div class="container">
+    <h1 class="page-title">Theory for Stage {{ stage_id }}</h1>
+    <section class="audit-card audit-learning-card">
+        <div class="section-tag-line">
+            <span class="section-pill pill-learn">Stage {{ stage_id }} Theory</span>
+            <span class="section-time">⏱️ Estimated {{ stage.estimated_minutes }} mins</span>
+        </div>
+        <h2 class="audit-section-heading">{{ stage.learning.topic }}</h2>
+        <p class="audit-section-intro">{{ stage.learning.intro }}</p>
+        <div class="concepts-grid">
+            {% for concept in stage.learning.key_concepts %}
+            <div class="concept-item-card">
+                <div class="concept-term-badge">{{ concept.term }}</div>
+                <p class="concept-def-text">{{ concept.definition }}</p>
+                {% if concept.example %}
+                <div class="concept-example-box">
+                    <span class="example-label">Real-World Analogy:</span>
+                    <span class="example-text">{{ concept.example }}</span>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="auditor-tip-callout">
+            <span class="tip-icon">💡</span>
+            <div>
+                <strong>Junior Auditor Guidance:</strong>
+                <span>{{ stage.learning.auditor_tip }}</span>
+            </div>
+        </div>
+    </section>
+    <a href="{{ url_for('audit_lab_stage', mission_id=mission.id, stage_id=stage_id) }}" class="btn btn-secondary mt-3">Back to Stage</a>
+</div>
+{% endblock %}

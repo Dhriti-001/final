@@ -1,0 +1,915 @@
+/* ==========================================================================
+   THREAT VECTOR - Dashboard Light Theme Stylesheet
+   Matching Reference Design: Clean, Colorful, Modern & Professional
+   ========================================================================== */
+
+/* Page Foundation */
+.dashboard-page {
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* Dashboard Full-Width Wrapper */
+.dashboard-fullwidth-wrapper {
+  max-width: 1360px;
+  margin: 1.5rem auto 3rem;
+  padding: 0 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   1. TOP HEADER BAR (Matching Reference Image)
+   -------------------------------------------------------------------------- */
+.top-header-bar-ref {
+  background: #FFFFFF;
+  border-bottom: 1px solid #E2E8F0;
+  padding: 0.85rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.top-header-container-ref {
+  max-width: 1360px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.top-header-brand-ref {
+  display: flex;
+  align-items: center;
+}
+
+.header-brand-link-ref {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  text-decoration: none;
+}
+
+.header-shield-wrap {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: #EFF6FF;
+  border: 1px solid #DBEAFE;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.08);
+}
+
+.header-shield-svg {
+  width: 26px;
+  height: 28px;
+}
+
+.header-brand-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  line-height: 1.15;
+}
+
+.brand-word-primary {
+  color: #0F172A;
+}
+
+.brand-word-blue {
+  color: #2563EB;
+}
+
+.header-subline {
+  color: #64748B;
+  font-size: 0.76rem;
+  font-weight: 500;
+  margin-top: 2px;
+  letter-spacing: 0.1px;
+}
+
+/* Right Actions: User Pill & Logout */
+.top-header-actions-ref {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.header-user-status-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #334155;
+  font-size: 0.88rem;
+  background: #F8FAFC;
+  padding: 0.45rem 1rem;
+  border-radius: 9999px;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.user-avatar-icon-wrap {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2563EB;
+}
+
+.user-avatar-svg {
+  width: 14px;
+  height: 14px;
+}
+
+.welcome-text-muted {
+  color: #64748B;
+  font-weight: 500;
+}
+
+.user-display-name {
+  color: #0F172A;
+  font-weight: 700;
+}
+
+.dropdown-chevron-symbol {
+  color: #64748B;
+  font-size: 0.85rem;
+  margin-left: 2px;
+}
+
+.btn-logout-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #DC2626;
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  padding: 0.45rem 0.95rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.btn-logout-pill:hover {
+  background: #FEE2E2;
+  border-color: #FCA5A5;
+  color: #B91C1C;
+}
+
+.logout-icon-svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* --------------------------------------------------------------------------
+   2. HERO WELCOME BANNER (Matching Reference Image)
+   -------------------------------------------------------------------------- */
+.dashboard-hero-banner {
+  background: linear-gradient(135deg, #E0F2FE 0%, #EFF6FF 50%, #F0F9FF 100%);
+  border: 1px solid #BAE6FD;
+  border-radius: 20px;
+  padding: 2.25rem 2.75rem;
+  margin-bottom: 1.75rem;
+  box-shadow: 0 4px 20px -2px rgba(14, 165, 233, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ambient soft wave background */
+.dashboard-hero-banner::after {
+  content: "";
+  position: absolute;
+  right: -5%;
+  bottom: -40%;
+  width: 480px;
+  height: 380px;
+  background: radial-gradient(circle, rgba(186, 230, 253, 0.45) 0%, rgba(224, 242, 254, 0) 70%);
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+.hero-content-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-left-col {
+  flex: 1;
+  max-width: 720px;
+}
+
+.hero-greeting-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.4rem;
+}
+
+.hero-wave-hand {
+  font-size: 2.2rem;
+  line-height: 1;
+  display: inline-block;
+  animation: waveAnim 2s infinite ease-in-out;
+  transform-origin: 70% 70%;
+}
+
+@keyframes waveAnim {
+  0%, 100% { transform: rotate(0deg); }
+  20%, 60% { transform: rotate(14deg); }
+  40%, 80% { transform: rotate(-8deg); }
+}
+
+.hero-heading {
+  font-size: 2.15rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+.hero-user-name {
+  color: #2563EB;
+}
+
+.hero-subtext {
+  font-size: 1.05rem;
+  color: #334155;
+  margin: 0.5rem 0 1.25rem 0;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.hero-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #FFFFFF;
+  border: 1px solid #DCFCE7;
+  border-radius: 9999px;
+  padding: 0.42rem 1.1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.badge-check-circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #16A34A;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.badge-highlight {
+  font-weight: 700;
+  color: #0F172A;
+  font-size: 0.88rem;
+}
+
+.badge-separator {
+  color: #CBD5E1;
+  font-size: 0.85rem;
+}
+
+.badge-tagline {
+  color: #475569;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Right Column: 3D Shield Scene */
+.hero-right-col {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-shield-illustration {
+  width: 240px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-shield-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 10px 20px rgba(37, 99, 235, 0.15));
+}
+
+/* --------------------------------------------------------------------------
+   3. SIX FEATURE MODULES GRID (3 Columns x 2 Rows)
+   Exact Modules & Order:
+   1. Simulation Drills
+   2. AI Threat Inspector
+   3. CTF Tactical Range
+   4. Security Audit Lab
+   5. Knowledge Check
+   6. Analytics & Risk Profile
+   -------------------------------------------------------------------------- */
+.feature-modules-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.module-card {
+  border-radius: 16px;
+  padding: 1.35rem 1.5rem;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 155px;
+  box-sizing: border-box;
+}
+
+.module-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px -4px rgba(15, 23, 42, 0.08);
+}
+
+/* Corner Abstract Pastel Blob */
+.module-corner-blob {
+  position: absolute;
+  right: -15px;
+  bottom: -15px;
+  width: 120px;
+  height: 90px;
+  pointer-events: none;
+  opacity: 0.65;
+  z-index: 1;
+}
+
+.card-top-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  position: relative;
+  z-index: 2;
+}
+
+.card-icon-title-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.95rem;
+  flex: 1;
+}
+
+.card-circle-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.card-circle-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: #FFFFFF;
+}
+
+.card-text-block {
+  flex: 1;
+}
+
+.module-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.module-description {
+  font-size: 0.84rem;
+  color: #475569;
+  margin: 0.25rem 0 0 0;
+  line-height: 1.45;
+}
+
+/* Top-Right Round Arrow Action Button */
+.card-arrow-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  transition: transform 0.2s ease;
+}
+
+.module-card:hover .card-arrow-btn {
+  transform: translateX(2px);
+}
+
+/* Bottom CTA Row: | Action Text -> */
+.card-bottom-cta {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 700;
+  font-size: 0.88rem;
+  margin-top: 1.15rem;
+  position: relative;
+  z-index: 2;
+}
+
+.cta-bar {
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.cta-text {
+  font-weight: 700;
+}
+
+.cta-arrow {
+  font-size: 0.95rem;
+  transition: transform 0.2s ease;
+}
+
+.module-card:hover .cta-arrow {
+  transform: translateX(3px);
+}
+
+/* --------------------------------------------------------------------------
+   Coordinated Theme Palettes for the 6 Modules
+   -------------------------------------------------------------------------- */
+
+/* 1. Simulation Drills (Blue Theme) */
+.module-theme-blue {
+  background: #F0F7FF;
+  border: 1px solid #DBEAFE;
+}
+.module-theme-blue .card-circle-icon {
+  background: #2563EB;
+}
+.module-theme-blue .card-arrow-btn {
+  background: #DBEAFE;
+  color: #1E40AF;
+}
+.module-theme-blue .card-bottom-cta {
+  color: #2563EB;
+}
+.module-theme-blue .cta-bar {
+  color: #2563EB;
+}
+
+/* 2. AI Threat Inspector (Purple Theme) */
+.module-theme-purple {
+  background: #FAF5FF;
+  border: 1px solid #E9D5FF;
+}
+.module-theme-purple .card-circle-icon {
+  background: #9333EA;
+}
+.module-theme-purple .card-arrow-btn {
+  background: #F3E8FF;
+  color: #7E22CE;
+}
+.module-theme-purple .card-bottom-cta {
+  color: #7E22CE;
+}
+.module-theme-purple .cta-bar {
+  color: #7E22CE;
+}
+
+/* 3. CTF Tactical Range (Amber/Peach Theme) */
+.module-theme-amber {
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+}
+.module-theme-amber .card-circle-icon {
+  background: #D97706;
+}
+.module-theme-amber .card-arrow-btn {
+  background: #FEF3C7;
+  color: #B45309;
+}
+.module-theme-amber .card-bottom-cta {
+  color: #B45309;
+}
+.module-theme-amber .cta-bar {
+  color: #B45309;
+}
+
+/* 4. Security Audit Lab (Coral/Red Theme) */
+.module-theme-red {
+  background: #FFF1F2;
+  border: 1px solid #FECDD3;
+}
+.module-theme-red .card-circle-icon {
+  background: #EF4444;
+}
+.module-theme-red .card-arrow-btn {
+  background: #FFE4E6;
+  color: #BE123C;
+}
+.module-theme-red .card-bottom-cta {
+  color: #DC2626;
+}
+.module-theme-red .cta-bar {
+  color: #DC2626;
+}
+
+/* 5. Knowledge Check (Green/Mint Theme) */
+.module-theme-green {
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+}
+.module-theme-green .card-circle-icon {
+  background: #16A34A;
+}
+.module-theme-green .card-arrow-btn {
+  background: #DCFCE7;
+  color: #15803D;
+}
+.module-theme-green .card-bottom-cta {
+  color: #16A34A;
+}
+.module-theme-green .cta-bar {
+  color: #16A34A;
+}
+
+/* 6. Analytics & Risk Profile (Violet/Indigo Theme) */
+.module-theme-indigo {
+  background: #F5F3FF;
+  border: 1px solid #DDD6FE;
+}
+.module-theme-indigo .card-circle-icon {
+  background: #4F46E5;
+}
+.module-theme-indigo .card-arrow-btn {
+  background: #EDE9FE;
+  color: #4338CA;
+}
+.module-theme-indigo .card-bottom-cta {
+  color: #4F46E5;
+}
+.module-theme-indigo .cta-bar {
+  color: #4F46E5;
+}
+
+/* --------------------------------------------------------------------------
+   4. "EXPLORE YOUR MODULES" & DUAL BOTTOM CARDS (Learned & Practiced)
+   -------------------------------------------------------------------------- */
+.modules-overview-section {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 20px;
+  padding: 1.75rem 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.overview-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.35rem;
+}
+
+.overview-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.overview-icon-wrap {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #EFF6FF;
+  border: 1px solid #DBEAFE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2563EB;
+}
+
+.overview-heading {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.overview-subheading {
+  font-size: 0.86rem;
+  color: #64748B;
+  margin: 0.2rem 0 0 0;
+}
+
+.overview-sparkles {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Dual Wide Cards Grid */
+.dual-cards-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.summary-card {
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  box-sizing: border-box;
+}
+
+.summary-card-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.summary-left-info {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.summary-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.summary-card-icon svg {
+  width: 22px;
+  height: 22px;
+  fill: #FFFFFF;
+}
+
+.blue-bubble {
+  background: #2563EB;
+}
+
+.green-bubble {
+  background: #16A34A;
+}
+
+.summary-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.summary-desc {
+  font-size: 0.82rem;
+  color: #64748B;
+  margin: 0.15rem 0 0 0;
+}
+
+.summary-badge-pill {
+  background: #FFFFFF;
+  border-radius: 9999px;
+  padding: 0.3rem 1.1rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+/* Learned Card Specifics */
+.learned-card {
+  background: #F0F7FF;
+  border: 1px solid #DBEAFE;
+}
+.learned-card .summary-badge-pill {
+  border: 1px solid #DBEAFE;
+  color: #1E40AF;
+}
+
+/* Practiced Card Specifics */
+.practiced-card {
+  background: #F0FDF4;
+  border: 1px solid #DCFCE7;
+}
+.practiced-card .summary-badge-pill {
+  border: 1px solid #BBF7D0;
+  color: #15803D;
+}
+
+/* Summary Card Footer Details */
+.summary-card-details {
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px dashed rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  color: #475569;
+  font-weight: 500;
+}
+
+.meta-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.meta-dot.blue {
+  background: #2563EB;
+}
+.meta-dot.green {
+  background: #16A34A;
+}
+
+.meta-link {
+  font-size: 0.84rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.meta-link.blue {
+  color: #2563EB;
+}
+.meta-link.blue:hover {
+  text-decoration: underline;
+}
+.meta-link.green {
+  color: #16A34A;
+}
+.meta-link.green:hover {
+  text-decoration: underline;
+}
+
+.practiced-metrics {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.metric-chip {
+  background: #FFFFFF;
+  border: 1px solid #DCFCE7;
+  border-radius: 6px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.78rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.chip-label {
+  color: #64748B;
+}
+
+.chip-val {
+  color: #0F172A;
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   5. MINIMAL LIGHT FOOTER
+   -------------------------------------------------------------------------- */
+.soc-footer-ref {
+  background: #FFFFFF;
+  border-top: 1px solid #E2E8F0;
+  padding: 1.25rem 2rem;
+  margin-top: auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.footer-ref-container {
+  max-width: 1360px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-ref-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: #64748B;
+  font-size: 0.85rem;
+}
+
+.footer-shield-wrap {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-shield-svg {
+  width: 18px;
+  height: 18px;
+}
+
+.footer-brand-title {
+  color: #0F172A;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.footer-dot-separator {
+  color: #CBD5E1;
+}
+
+.footer-tagline-text {
+  color: #64748B;
+  font-weight: 500;
+}
+
+/* --------------------------------------------------------------------------
+   6. RESPONSIVE BREAKPOINTS
+   -------------------------------------------------------------------------- */
+@media (max-width: 1100px) {
+  .feature-modules-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-fullwidth-wrapper {
+    padding: 0 1rem;
+    margin: 1rem auto 2rem;
+  }
+  .hero-content-flex {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .hero-right-col {
+    display: none;
+  }
+  .feature-modules-grid {
+    grid-template-columns: 1fr;
+  }
+  .dual-cards-row {
+    grid-template-columns: 1fr;
+  }
+  .top-header-container-ref {
+    flex-wrap: wrap;
+  }
+}
